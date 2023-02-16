@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RSS Feed Aggregator", "RSS Feed Aggregator\RSS Feed Aggregator.csproj", "{761408B7-CE14-49DF-88F1-554D4641ADF1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RSSFeedParser", "RSSFeedParser\RSSFeedParser.csproj", "{65D214D9-B077-4D4B-8488-FACCB1029BCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSSParser", "RSSParser\RSSParser.csproj", "{5F56AC22-C04F-43CF-8024-B44EF0DA5889}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{761408B7-CE14-49DF-88F1-554D4641ADF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{761408B7-CE14-49DF-88F1-554D4641ADF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{761408B7-CE14-49DF-88F1-554D4641ADF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{761408B7-CE14-49DF-88F1-554D4641ADF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65D214D9-B077-4D4B-8488-FACCB1029BCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65D214D9-B077-4D4B-8488-FACCB1029BCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65D214D9-B077-4D4B-8488-FACCB1029BCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65D214D9-B077-4D4B-8488-FACCB1029BCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F56AC22-C04F-43CF-8024-B44EF0DA5889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F56AC22-C04F-43CF-8024-B44EF0DA5889}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F56AC22-C04F-43CF-8024-B44EF0DA5889}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F56AC22-C04F-43CF-8024-B44EF0DA5889}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3DDE58FD-B2C3-4C3F-A75A-16F2ED6926E2}
+	EndGlobalSection
+EndGlobal
