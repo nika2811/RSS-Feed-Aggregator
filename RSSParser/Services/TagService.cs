@@ -64,9 +64,17 @@ public class TagService
         // Add new tags to the article and create ArticleTag entities for them
         foreach (var tag in tagsToAdd)
         {
-            // article?.ArticleTags?.Add(new ArticleTag { Article = article, Tag = tag });
-            var articleTag = new ArticleTag { Article = article, Tag = tag };
-            article.ArticleTags.Add(articleTag);
+            var savedTag = existingTags.FirstOrDefault(t => t.Name == tag.Name);
+            if (savedTag != null)
+            {
+                article.ArticleTags.Add(new ArticleTag { Article = article, Tag = savedTag,TagId = tag.Id});
+            }
+        }
+
+        // article?.ArticleTags?.AddRange(articleTags);
+        foreach (var articleTag in articleTags)
+        {
+            article?.ArticleTags?.Add(articleTag);
         }
 
         await _context.SaveChangesAsync();
