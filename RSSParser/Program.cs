@@ -2,7 +2,6 @@
 using RSS_Feed_Aggregator.Db;
 using RSSParser.Services;
 
-
 namespace RSSParser;
 
 public static class Program
@@ -13,7 +12,7 @@ public static class Program
         var articleService = new ArticleService();
         var tagService = new TagService(rssDbContext);
 
-        var feedsParser = new RssFeedParser(rssDbContext, articleService, tagService );
+        var feedsParser = new RssFeedParser(rssDbContext, articleService, tagService);
         var rssFeedUrls = new List<string>
         {
             "https://stackoverflow.blog/feed/",
@@ -26,7 +25,7 @@ public static class Program
             "https://codeopinion.com/feed/",
             "https://andrewlock.net/rss.xml",
             "https://michaelscodingspot.com/index.xml",
-            "https://www.tabsoverspaces.com/feed.xml",
+            "https://www.tabsoverspaces.com/feed.xml"
         };
 
 

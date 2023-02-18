@@ -26,13 +26,16 @@ public class RssFeedParser
         var batchSize = 10;
         var batches = rssFeedUrls.Batch(batchSize).ToList();
 
+        await using var db = new RssDbContext(CreateDbContextOptions());
+        await db.Database.EnsureCreatedAsync();
+
         foreach (var batch in batches)
             tasks.Add(Task.Run(async () =>
             {
+                await using var dbContext = new RssDbContext(CreateDbContextOptions());
                 foreach (var url in batch)
                     try
                     {
-                        await using var dbContext = new RssDbContext(CreateDbContextOptions());
                         using var reader = XmlReader.Create(url);
                         var feed = SyndicationFeed.Load(reader);
 
@@ -44,14 +47,28 @@ public class RssFeedParser
                                 {
                                     Title = _articleService.RemoveJavaScriptCode(item.Title.Text),
                                     Link = item.Links[0].Uri.ToString(),
-                                    Description = _articleService.RemoveJavaScriptCode(item.Summary.Text),
-                                    Author = _articleService.RemoveJavaScriptCode(item.Authors[0].Name),
+                                    Description =
+                                        _articleService.RemoveJavaScriptCode(item.Summary == null
+                                            ? ""
+                                            : item.Summary.Text),
+                                    // Author = _articleService.RemoveJavaScriptCode(item.Authors[0].Name),
+                                    Author = item.Authors.Count > 0
+                                        ? _articleService.RemoveJavaScriptCode(item.Authors[0].Name)
+                                        : null,
                                     PublicationDate = item.PublishDate.DateTime,
-                                    Image = item.Links.FirstOrDefault(l => l.MediaType == "image/jpeg")?.Uri.ToString()
+                                    Image = item.Links.FirstOrDefault(l => l.MediaType == "image/")?.Uri.ToString()
                                 };
 
                                 await _tagService.AddTagsToArticle(article);
                                 dbContext.Articles.Add(article);
+
+                                var tags = item.Categories.Select(c => c.Name);
+                                foreach (var tagName in tags)
+                                {
+                                    var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
+                                    var articleTag = new ArticleTag { Article = article, Tag = tag };
+                                    dbContext.ArticleTags.Add(articleTag);
+                                }
                             }
 
                         await dbContext.SaveChangesAsync();
