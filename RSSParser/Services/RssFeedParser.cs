@@ -51,7 +51,6 @@ public class RssFeedParser
                                         _articleService.RemoveJavaScriptCode(item.Summary == null
                                             ? ""
                                             : item.Summary.Text),
-                                    // Author = _articleService.RemoveJavaScriptCode(item.Authors[0].Name),
                                     Author = item.Authors.Count > 0
                                         ? _articleService.RemoveJavaScriptCode(item.Authors[0].Name)
                                         : null,
@@ -61,14 +60,6 @@ public class RssFeedParser
 
                                 await _tagService.AddTagsToArticle(article);
                                 dbContext.Articles.Add(article);
-
-                                var tags = item.Categories.Select(c => c.Name);
-                                foreach (var tagName in tags)
-                                {
-                                    var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
-                                    var articleTag = new ArticleTag { Article = article, Tag = tag };
-                                    dbContext.ArticleTags.Add(articleTag);
-                                }
                             }
 
                         await dbContext.SaveChangesAsync();

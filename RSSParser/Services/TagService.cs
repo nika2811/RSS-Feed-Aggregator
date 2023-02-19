@@ -13,70 +13,33 @@ public class TagService
         _context = context;
     }
 
-    // public async Task AddTagsToArticle(Article article)
-    // {
-    //     var tagsToAdd = new List<Tag>();
-    //     var articleText = article.Title + " " + article.Description;
-    //     var existingTags = _context.Tags.ToList();
-    //
-    //     foreach (var existingTag in existingTags)
-    //     {
-    //         if (articleText.Contains(existingTag.Name))
-    //
-    //             article?.ArticleTags?.Add(new ArticleTag { Article = article, Tag = existingTag });
-    //     }
-    //
-    //     var newTags = articleText.Split(" ")
-    //         .Where(s => !existingTags.Any(et => et.Name.Contains(s)))
-    //         .Distinct()
-    //         .Select(s => new Tag { Name = s });
-    //
-    //     tagsToAdd.AddRange(newTags);
-    //
-    //     _context.Tags.AddRange(tagsToAdd);
-    //     await _context.SaveChangesAsync();
-    // }
     public async Task AddTagsToArticle(Article article)
     {
+        await using var context = new RssDbContext(CreateDbContextOptions());
+        var tagsToAdd = new List<Tag>();
         var articleText = article.Title + " " + article.Description;
-        var existingTags = await _context.Tags.ToListAsync();
+        var existingTags = context.Tags.ToList();
 
-        var existingTagNames = existingTags.Select(tag => tag.Name).ToHashSet();
-        var newTagNames = articleText.Split(" ")
-            .Where(s => !existingTagNames.Contains(s))
-            .Distinct();
+        foreach (var existingTag in existingTags.Where(existingTag => articleText.Contains(existingTag.Name)))
+            article?.ArticleTags?.Add(new ArticleTag
+                { ArticleId = article.Id, Tag = existingTag, TagId = existingTag.Id, Article = article });
 
-        var tagsToAdd = newTagNames.Select(s => new Tag { Name = s }).ToList();
+        var newTags = articleText.Split(" ")
+            .Where(s => !existingTags.Any(et => et.Name.Contains(s)))
+            .Distinct()
+            .Select(s => new Tag { Name = s });
 
-        // Add new tags to the database
-        await _context.Tags.AddRangeAsync(tagsToAdd);
-        await _context.SaveChangesAsync();
+        tagsToAdd.AddRange(newTags);
 
-        // Get all tags again (including the new ones that were just added)
-        existingTags = await _context.Tags.ToListAsync();
+        context.Tags.AddRange(tagsToAdd);
+        await context.SaveChangesAsync();
+    }
 
-        // Get the existing tags that are mentioned in the article text
-        var existingTagsInArticle = existingTags.Where(tag => articleText.Contains(tag.Name)).ToList();
 
-        // Create ArticleTag entities for the existing tags
-        var articleTags = existingTagsInArticle.Select(tag => new ArticleTag { Article = article, Tag = tag });
-
-        // Add new tags to the article and create ArticleTag entities for them
-        foreach (var tag in tagsToAdd)
-        {
-            var savedTag = existingTags.FirstOrDefault(t => t.Name == tag.Name);
-            if (savedTag != null)
-            {
-                article.ArticleTags.Add(new ArticleTag { Article = article, Tag = savedTag,TagId = tag.Id});
-            }
-        }
-
-        // article?.ArticleTags?.AddRange(articleTags);
-        foreach (var articleTag in articleTags)
-        {
-            article?.ArticleTags?.Add(articleTag);
-        }
-
-        await _context.SaveChangesAsync();
+    private static DbContextOptions<RssDbContext> CreateDbContextOptions()
+    {
+        var builder = new DbContextOptionsBuilder<RssDbContext>();
+        builder.UseSqlServer("Server=localhost;Database=RSS-Feed_db;User Id=nika;Password=123;Encrypt=false;");
+        return builder.Options;
     }
 }
