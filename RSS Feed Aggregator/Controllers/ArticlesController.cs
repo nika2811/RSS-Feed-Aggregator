@@ -16,6 +16,13 @@ public class ArticlesController : ControllerBase
         _context = context;
     }
 
+    [HttpGet("get-all-feeds")]
+    public async Task<IActionResult> GetAllFeeds()
+    {
+        var feeds = await _context.Articles.ToListAsync();
+        return Ok(feeds);
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Article>>> GetArticles(string tag)
     {
