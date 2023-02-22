@@ -10,12 +10,10 @@ namespace RSSParser.Services;
 public class RssFeedParser
 {
     private readonly ArticleService _articleService;
-    private readonly RssDbContext _context;
     private readonly TagService _tagService;
 
-    public RssFeedParser(RssDbContext context, ArticleService articleService, TagService tagService)
+    public RssFeedParser(ArticleService articleService, TagService tagService)
     {
-        _context = context;
         _articleService = articleService;
         _tagService = tagService;
     }
@@ -57,8 +55,8 @@ public class RssFeedParser
                                     PublicationDate = item.PublishDate.DateTime,
                                     Image = item.Links.FirstOrDefault(l => l.MediaType == "image/")?.Uri.ToString()
                                 };
-
-                                await _tagService.AddTagsToArticle(article);
+                                Console.WriteLine(item.Categories.ToString());
+                                await _tagService.AddCategoriesToArticle(item.Categories.ToList(), article);
                                 dbContext.Articles.Add(article);
                             }
 

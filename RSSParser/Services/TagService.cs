@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ServiceModel.Syndication;
+using Microsoft.EntityFrameworkCore;
 using RSS_Feed_Aggregator.Db;
 using RSS_Feed_Aggregator.Models;
 
@@ -6,32 +7,35 @@ namespace RSSParser.Services;
 
 public class TagService
 {
-    private readonly RssDbContext _context;
-
-    public TagService(RssDbContext context)
+    public TagService()
     {
-        _context = context;
     }
 
-    public async Task AddTagsToArticle(Article article)
+    public async Task AddCategoriesToArticle(List<SyndicationCategory> categories, Article article)
     {
         await using var context = new RssDbContext(CreateDbContextOptions());
-        var tagsToAdd = new List<Tag>();
-        var articleText = article.Title + " " + article.Description;
-        var existingTags = context.Tags.ToList();
 
-        foreach (var existingTag in existingTags.Where(existingTag => articleText.Contains(existingTag.Name)))
-            article?.ArticleTags?.Add(new ArticleTag
-                { ArticleId = article.Id, Tag = existingTag, TagId = existingTag.Id, Article = article });
+        var categoriesToAdd = new List<Tag>();
 
-        var newTags = articleText.Split(" ")
-            .Where(s => !existingTags.Any(et => et.Name.Contains(s)))
-            .Distinct()
-            .Select(s => new Tag { Name = s });
+        foreach (var category in categories)
+        {
+            var categoryName = category.Name;
+            var existingCategory = context.Tags.FirstOrDefault(c => c.Name == categoryName);
 
-        tagsToAdd.AddRange(newTags);
+            if (existingCategory != null)
+            {
+                article.ArticleTags.Add(new ArticleTag { Article = article, Tag = existingCategory });
+            }
+            else
+            {
+                var newCategory = new Tag { Name = categoryName };
+                categoriesToAdd.Add(newCategory);
+                article.ArticleTags.Add(new ArticleTag
+                    { Article = article, Tag = newCategory, ArticleId = article.Id, TagId = newCategory.Id });
+            }
+        }
 
-        context.Tags.AddRange(tagsToAdd);
+        context.Tags.AddRange(categoriesToAdd);
         await context.SaveChangesAsync();
     }
 

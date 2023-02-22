@@ -10,9 +10,9 @@ public static class Program
     {
         var rssDbContext = new RssDbContext(CreateDbContextOptions());
         var articleService = new ArticleService();
-        var tagService = new TagService(rssDbContext);
+        var tagService = new TagService();
 
-        var feedsParser = new RssFeedParser(rssDbContext, articleService, tagService);
+        var feedsParser = new RssFeedParser(articleService, tagService);
         var rssFeedUrls = new List<string>
         {
             "https://stackoverflow.blog/feed/",
