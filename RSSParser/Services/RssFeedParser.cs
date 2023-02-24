@@ -1,9 +1,11 @@
-﻿using System.ServiceModel.Syndication;
+﻿using System.Net.Mime;
+using System.ServiceModel.Syndication;
 using System.Xml;
 using Microsoft.EntityFrameworkCore;
 using MoreLinq.Extensions;
 using RSS_Feed_Aggregator.Db;
 using RSS_Feed_Aggregator.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RSSParser.Services;
 
@@ -53,11 +55,10 @@ public class RssFeedParser
                                         ? _articleService.RemoveJavaScriptCode(item.Authors[0].Name)
                                         : null,
                                     PublicationDate = item.PublishDate.DateTime,
-                                    Image = item.Links.FirstOrDefault(l => l.MediaType == "image/")?.Uri.ToString()
                                 };
-                                Console.WriteLine(item.Categories.ToString());
+                                article.Image = feed.ImageUrl?.ToString();
                                 await _tagService.AddCategoriesToArticle(item.Categories.ToList(), article);
-                                dbContext.Articles.Add(article);
+                               // dbContext.Articles.Add(article);
                             }
 
                         await dbContext.SaveChangesAsync();

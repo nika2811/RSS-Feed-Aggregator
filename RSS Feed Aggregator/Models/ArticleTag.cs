@@ -1,7 +1,8 @@
 ﻿namespace RSS_Feed_Aggregator.Models;
 
 public class ArticleTag
-{
+{ 
+    public int Id { get; set; }
     public int ArticleId { get; set; }
     public Article Article { get; set; }
 

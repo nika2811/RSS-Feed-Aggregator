@@ -16,7 +16,7 @@ public class RssDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ArticleTag>()
-            .HasKey(at => new { at.ArticleId, at.TagId });
+            .HasKey(at => new { at.Id });
 
         modelBuilder.Entity<ArticleTag>()
             .HasOne(at => at.Article)

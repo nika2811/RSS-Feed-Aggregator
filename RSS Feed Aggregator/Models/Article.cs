@@ -8,6 +8,11 @@ public class Article
     public string? Description { get; set; }
     public string? Author { get; set; }
     public string? Image { get; set; }
-    public ICollection<ArticleTag> ArticleTags { get; set; }
+    public List<ArticleTag> ArticleTags { get; set; }
     public DateTime PublicationDate { get; set; }
+
+    public Article()
+    {
+        ArticleTags = new List<ArticleTag>();
+    }
 }
