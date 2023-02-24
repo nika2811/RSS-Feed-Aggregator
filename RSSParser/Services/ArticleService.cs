@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 
 namespace RSSParser.Services;
 
@@ -20,5 +19,4 @@ public class ArticleService
         htmlDoc.DocumentNode.Descendants("script").ToList().ForEach(n => n.Remove());
         return htmlDoc.DocumentNode.OuterHtml;
     }
-
 }
